@@ -1,0 +1,14 @@
+.git
+.env
+.tools
+data/node_modules
+data/context
+data/dist-plugins
+data/lib
+data/*_cred.json
+data/.config*.json*
+data/.sessions.json
+data/*.sqlite
+data/package.json
+data/package-lock.json
+node_modules

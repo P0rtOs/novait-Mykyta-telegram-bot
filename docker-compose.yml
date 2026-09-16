@@ -1,0 +1,16 @@
+services:
+  redbot:
+    build:
+      context: .
+    container_name: novait-redbot
+    ports:
+      - "1880:1880"
+    environment:
+      TZ: Europe/Kyiv
+      NODE_RED_CREDENTIAL_SECRET: ${NODE_RED_CREDENTIAL_SECRET:-local-development-secret}
+      CALCULATOR_MAX_INPUT_LENGTH: ${CALCULATOR_MAX_INPUT_LENGTH:-50}
+      CALCULATOR_MAX_ABS_VALUE: ${CALCULATOR_MAX_ABS_VALUE:-1000000}
+      CALCULATOR_DECIMAL_PLACES: ${CALCULATOR_DECIMAL_PLACES:-10}
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
