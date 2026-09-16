@@ -100,6 +100,10 @@ Simple Telegram bot built with Node-RED, RedBot, and Docker.
 - NBU API errors and invalid responses are handled with a friendly user message.
 - Structured logs are written for router, calculator, and exchange-rate steps.
 - Log format is centralized in `data/settings.js` via `formatLogEvent`.
+- The Postman collection for the optional API check is stored in
+  `postman/NBU_API.postman_collection.json`.
+- Screenshots and video files for the final submission are duplicated in the
+  `media/` folder.
 
 ## Architecture Notes
 
@@ -114,6 +118,15 @@ routing decisions into one central `Route: incoming` Function node. Button value
 such as `calc`, `rates`, `about`, and `menu` go through the same receiver as
 normal Telegram messages, and the router decides which branch should handle them.
 This keeps the canvas cleaner and makes the behavior easier to debug.
+
+The Docker setup uses a bind volume in `docker-compose.yml`:
+`./data:/data`. Node-RED stores its editable flow files inside `/data` in the
+container, so this volume connects the visual no-code editor with the local
+repository files. When a flow is changed in the Node-RED UI and `Deploy` is
+clicked, the local `data/flows.json` file is updated through that mounted
+folder and can be committed to Git. Local runtime files and credentials are
+ignored separately, so the repository keeps the flow structure without exposing
+private bot credentials.
 
 For logging, I used a small Winston-inspired structured logger instead of adding
 the full Winston library. Winston is a strong general-purpose logging library,
