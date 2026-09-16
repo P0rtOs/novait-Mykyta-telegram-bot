@@ -11,6 +11,7 @@ services:
       CALCULATOR_MAX_INPUT_LENGTH: ${CALCULATOR_MAX_INPUT_LENGTH:-50}
       CALCULATOR_MAX_ABS_VALUE: ${CALCULATOR_MAX_ABS_VALUE:-1000000}
       CALCULATOR_DECIMAL_PLACES: ${CALCULATOR_DECIMAL_PLACES:-10}
+      NBU_EXCHANGE_RATES_URL: "${NBU_EXCHANGE_RATES_URL:-https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json}"
     volumes:
       - ./data:/data
     restart: unless-stopped

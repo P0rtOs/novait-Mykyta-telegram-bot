@@ -95,6 +95,7 @@ Simple Telegram bot built with Node-RED, RedBot, and Docker.
 - USD and EUR rates are parsed from JSON and shown as readable text.
 - NBU API errors and invalid responses are handled with a friendly user message.
 - Structured logs are written for router, calculator, and exchange-rate steps.
+- Log format is centralized in `data/settings.js` via `formatLogEvent`.
 
 ## Architecture Notes
 
