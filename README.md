@@ -35,6 +35,10 @@ Simple Telegram bot built with Node-RED, RedBot, and Docker.
    If this value changes later, Node-RED may not be able to decrypt the saved
    Telegram bot token.
 
+   `TELEGRAM_BOT_TOKEN` in `.env.example` is only a reminder for the setup
+   process. RedBot does not automatically read the Telegram token from `.env`
+   in this project; the token must be added through the Node-RED editor.
+
 3. Start the project:
 
    ```bash
@@ -56,7 +60,7 @@ Simple Telegram bot built with Node-RED, RedBot, and Docker.
    - Click `Done`, then `Deploy`.
 
    The token is stored in local Node-RED credentials and is intentionally not
-   committed to Git.
+   committed to Git. The local credentials file is ignored by Git.
 
 6. Test the bot in Telegram:
 
@@ -111,24 +115,53 @@ such as `calc`, `rates`, `about`, and `menu` go through the same receiver as
 normal Telegram messages, and the router decides which branch should handle them.
 This keeps the canvas cleaner and makes the behavior easier to debug.
 
+For logging, I used a small Winston-inspired structured logger instead of adding
+the full Winston library. Winston is a strong general-purpose logging library,
+and I used it as a reference point for the idea: consistent log levels, a shared
+JSON structure, timestamps, step names, and contextual details. In this Node-RED
+project, the formatter is centralized in `data/settings.js`, while Function
+nodes pass events through it and write them with Node-RED's built-in
+`node.log` / `node.warn` methods.
+
 ## Known Issues / Not Done
 
 - Telegram credentials are not included in the repository by design. A new user
   must paste their own bot token in Node-RED after starting the project.
+- The `.env` file is used for local runtime settings, but the Telegram token is
+  configured through Node-RED credentials, not read automatically from `.env`.
 - The bot is configured for local development with polling, not production
   webhooks.
-- Screenshots or GIFs of the Telegram dialog are not included yet.
-- `logs.md` with the three required diagnostic scenarios should be captured from
-  a local run before final submission.
+- The Node-RED editor is intended for local use only and is not protected with
+  `adminAuth` in this test setup.
+- `npm audit` reports vulnerable transitive dependencies in the RedBot /
+  `node-red-contrib-chatbot` dependency tree. The bot logic does not execute
+  user calculator input as code, but the dependency stack should be reviewed
+  before production use.
+- Docker dependencies are not pinned tightly: the image uses
+  `nodered/node-red:latest`, and RedBot is installed without a fixed version.
+- `NODE_RED_CREDENTIAL_SECRET` has a local-development default. It should be
+  changed to a strong stable value outside local testing.
+- Screenshots or GIFs of the Telegram dialog are prepared separately for the
+  final submission archive.
 
 ## Time Spent
 
-Approximately 4-5 hours for Docker setup, Node-RED flow implementation,
-debugging, API integration, logging, documentation, and GitHub setup.
+Approximately 4-5 hours in total.
+
+This was my first time building a Telegram bot and my first practical experience
+with a no-code / visual flow tool like Node-RED. Because of that, roughly the
+first hour was spent reading Node-RED and RedBot documentation and understanding
+how to structure the bot as connected nodes.
+
+The calculator branch took about 1.5 hours, mostly because I spent extra time on
+validation, edge cases, and making the Function node readable. The NBU API
+integration took about 30 minutes. The last hour was spent improving code
+quality, adding a unified structured logger, cleaning up the flow, writing setup
+instructions, and polishing the README.
 
 ## Checklist
 
-Statuses: ✅ done · 🟨 partial · ❌ not done.
+Statuses: ✅ done | 🟨 partial | ❌ not done.
 
 | Item | Status | Comment |
 | --- | --- | --- |
@@ -141,7 +174,7 @@ Statuses: ✅ done · 🟨 partial · ❌ not done.
 | Validation: empty / too long input | ✅ done | Empty, multiline, too long, and too large values are handled. |
 | NBU exchange rates API | ✅ done | Uses the public NBU JSON endpoint. |
 | API unavailability handling | ✅ done | Bad status or invalid payload returns a friendly fallback message. |
-| Logs: successful scenario | 🟨 partial | Structured logs are implemented; final `logs.md` still needs captured snippets. |
-| Logs: invalid input | 🟨 partial | Structured logs are implemented; final `logs.md` still needs captured snippets. |
-| Logs: API failure | 🟨 partial | Error handling is implemented; final `logs.md` still needs a forced-failure snippet. |
+| Logs: successful scenario | ✅ done | Captured in `logs.md`. |
+| Logs: invalid input | ✅ done | Captured in `logs.md`. |
+| Logs: API failure | ✅ done | Captured in `logs.md` with a broken NBU URL. |
 | README in English | ✅ done | This README contains setup instructions, status, notes, and checklist. |

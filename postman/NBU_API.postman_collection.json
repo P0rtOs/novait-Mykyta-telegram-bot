@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "NovaIT NBU API Bonus",
+    "description": "Small Postman collection for checking the public NBU exchange rates API used by the Telegram bot.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "nbuExchangeUrl",
+      "value": "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange"
+    }
+  ],
+  "item": [
+    {
+      "name": "NBU - All current exchange rates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{nbuExchangeUrl}}?json",
+          "host": [
+            "{{nbuExchangeUrl}}"
+          ],
+          "query": [
+            {
+              "key": "json",
+              "value": null
+            }
+          ]
+        },
+        "description": "Returns the full current exchange-rate list from the public NBU API."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Response is an array', function () {",
+              "  pm.expect(data).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('USD and EUR are present', function () {",
+              "  pm.expect(data.some(item => item.cc === 'USD')).to.equal(true);",
+              "  pm.expect(data.some(item => item.cc === 'EUR')).to.equal(true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "NBU - USD current rate",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{nbuExchangeUrl}}?valcode=USD&json",
+          "host": [
+            "{{nbuExchangeUrl}}"
+          ],
+          "query": [
+            {
+              "key": "valcode",
+              "value": "USD"
+            },
+            {
+              "key": "json",
+              "value": null
+            }
+          ]
+        },
+        "description": "Returns the current USD exchange rate from the public NBU API."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('USD rate shape is valid', function () {",
+              "  pm.expect(data).to.be.an('array').that.is.not.empty;",
+              "  pm.expect(data[0].cc).to.equal('USD');",
+              "  pm.expect(Number(data[0].rate)).to.be.above(0);",
+              "  pm.expect(data[0].exchangedate).to.be.a('string');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "NBU - EUR current rate",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{nbuExchangeUrl}}?valcode=EUR&json",
+          "host": [
+            "{{nbuExchangeUrl}}"
+          ],
+          "query": [
+            {
+              "key": "valcode",
+              "value": "EUR"
+            },
+            {
+              "key": "json",
+              "value": null
+            }
+          ]
+        },
+        "description": "Returns the current EUR exchange rate from the public NBU API."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('EUR rate shape is valid', function () {",
+              "  pm.expect(data).to.be.an('array').that.is.not.empty;",
+              "  pm.expect(data[0].cc).to.equal('EUR');",
+              "  pm.expect(Number(data[0].rate)).to.be.above(0);",
+              "  pm.expect(data[0].exchangedate).to.be.a('string');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
